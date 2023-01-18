@@ -1,3 +1,16 @@
+'''
+Exemplo de construção do Probability Matching (PM), um produto
+criado por Elizabeth ??? (citar autora), que visa substituir
+o campo médio de chuva por um campo com valores "mais prováveis"
+em função do resultado da média do conjunto de previsão.
+
+A FAZER:
+1) construir uma função, que deve
+   1.A) receber o conjunto de previsões de chuva (entrada)
+   1.B) calcular o campo médio
+   1.C) retornar o campo de PM, com as mesmas coordenadas
+        espaciais do dado de entrada (saída)
+'''
 import numpy as np
 import matplotlib.pyplot as plt
 import xarray as xr
@@ -27,7 +40,7 @@ dimsChuvaMedia = chuvaMedia.dims
 pesosCampoMedio = np.empty( chuvaMedia.shape, dtype=int )
 
 # arranjo para resultado final: PM
-prob_match = np.empty( chuvaMedia.shape )
+probMatch = np.empty( chuvaMedia.shape )
 
 
 # loop que identifica a ordem dos valores no campo médio
@@ -59,6 +72,7 @@ while contaBuscaMax <= pesoMaximo:
    # dicionário com o nome das dimensões do campo
    # e as coordenadas do máximo , para ser usado com 
    # .loc, no xarray
+   # A FAZER: retirar essa parte para simplificar! Usar NUMPY
    dictPosMaxChuvaMedia = dict( zip(dimsChuvaMedia,posMaxChuvaMedia) )
    #print(dictPosMaxChuvaMedia)
 
@@ -86,20 +100,28 @@ for item in np.arange( 1, chuvaMedia.size+1 ):
 
    # atualizando campo final, com as medianas obtidas acima, de acordo com
    # a posição dos maiores valores no campi médio, armazenados em 'pesosCampoMedio'
-   prob_match = np.where( pesosCampoMedio == item, novoValorCampo, prob_match)
+   probMatch = np.where( pesosCampoMedio == item, novoValorCampo, probMatch)
 
    # incrementando posição inicial do intervalo de valores a ser avaliado
    posInicial += nMembros
 
+resultadoPM = xr.DataArray(probMatch,
+                           dims=dimsChuvaMedia,
+                           coords=chuvaMedia.coords,
+                           name='PM_'+chuvaMedia.name)
+
 print('Média do conjunto de previsões: (APÓS PROCESSAMENTO)')
 print(chuvaMedia)
 print('PM do conjunto de previsões:')
-print(prob_match)
+print(probMatch)
+print('PM em xr.DataArray:')
+print(resultadoPM)
 
 ''''
 CORREÇÕES:
 1) Não permitir a alteração do dado de entrada, ou seja, do campo médio de chuva
    (VER COMENTÁRIOS ANTES LOOP WHILE)
-2) Tornar o PM do campo de chuva um xr.DataArray, com as mesmas dimensões e coords dos
-   campos originais (APÓS LOOP FOR)
+   OBS) Como o dado de entrada será (veja os comentários no início do programa)
+        o conjunto de previsões de chuva, não há porque se preocupar com a alteração
+        do campo médio calculado.
 '''
