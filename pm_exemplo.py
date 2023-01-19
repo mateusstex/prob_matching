@@ -12,7 +12,6 @@ A FAZER:
         espaciais do dado de entrada (saída)
 '''
 import numpy as np
-import matplotlib.pyplot as plt
 import xarray as xr
 
 # membros da previsão por conjunto (seriam lidos de arquivos)
@@ -116,12 +115,3 @@ print('PM do conjunto de previsões:')
 print(probMatch)
 print('PM em xr.DataArray:')
 print(resultadoPM)
-
-''''
-CORREÇÕES:
-1) Não permitir a alteração do dado de entrada, ou seja, do campo médio de chuva
-   (VER COMENTÁRIOS ANTES LOOP WHILE)
-   OBS) Como o dado de entrada será (veja os comentários no início do programa)
-        o conjunto de previsões de chuva, não há porque se preocupar com a alteração
-        do campo médio calculado.
-'''
